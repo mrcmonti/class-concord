@@ -52,7 +52,7 @@ const navGroups: NavGroup[] = [
       { label: "Professores", icon: GraduationCap },
       { label: "Turmas", icon: BookOpen },
       { label: "Modalidades", icon: Sparkles },
-      { label: "Experimentais", icon: Beaker },
+      { label: "Experimentais", icon: Beaker, active: true },
     ],
   },
   {
