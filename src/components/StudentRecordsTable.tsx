@@ -17,118 +17,89 @@ import {
   ClipboardList,
   Beaker,
   ArrowUpDown,
+  ChevronRight,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 type RecordType = "matricula" | "experimental";
 
-type StatusMatricula = "ativa" | "pausada" | "cancelada" | "inadimplente";
-type StatusExperimental =
-  | "agendada"
-  | "realizada"
-  | "follow-up"
-  | "contatada"
-  | "nao-compareceu"
-  | "convertida"
-  | "descartada";
-
-interface RegistrationRecord {
+interface StudentRecord {
   id: string;
-  aluno: string;
   tipo: RecordType;
-  status: StatusMatricula | StatusExperimental;
-  planoOuModalidade: string;
+  status: string;
+  modalidade: string;
+  plano?: string;
   turma: string;
   professor: string;
   dataInicio: string;
   dataFim?: string;
+  horario?: string;
 }
 
-const mockData: RegistrationRecord[] = [
+const mockRecords: StudentRecord[] = [
   {
     id: "1",
-    aluno: "Ana Carolina",
     tipo: "matricula",
     status: "ativa",
-    planoOuModalidade: "Plano Mensal",
-    turma: "Yoga Manhã",
-    professor: "Mauricio Professor",
+    modalidade: "Musculação",
+    plano: "Plano Mensal",
+    turma: "Musculação A",
+    professor: "Carlos Instrutor",
     dataInicio: "01/02/2026",
     dataFim: "01/03/2026",
   },
   {
     id: "2",
-    aluno: "Bruno Santos",
     tipo: "matricula",
-    status: "inadimplente",
-    planoOuModalidade: "Plano Trimestral",
-    turma: "Musculação A",
-    professor: "Carlos Instrutor",
+    status: "ativa",
+    modalidade: "Yoga",
+    plano: "Plano Trimestral",
+    turma: "Yoga Manhã",
+    professor: "Juliana Instrutora",
     dataInicio: "15/01/2026",
     dataFim: "15/04/2026",
   },
   {
     id: "3",
-    aluno: "Camila Ferreira",
-    tipo: "experimental",
-    status: "agendada",
-    planoOuModalidade: "Ginástica",
-    turma: "Ginástica T1",
+    tipo: "matricula",
+    status: "pausada",
+    modalidade: "Pilates",
+    plano: "Plano Mensal",
+    turma: "Pilates Tarde",
     professor: "Mauricio Professor",
-    dataInicio: "30/03/2026",
+    dataInicio: "01/01/2026",
+    dataFim: "01/02/2026",
   },
   {
     id: "4",
-    aluno: "Diego Almeida",
     tipo: "experimental",
-    status: "convertida",
-    planoOuModalidade: "Pilates",
-    turma: "Pilates Manhã",
-    professor: "Juliana Instrutora",
-    dataInicio: "25/03/2026",
+    status: "agendada",
+    modalidade: "Ginástica",
+    turma: "Ginástica T1",
+    professor: "Mauricio Professor",
+    dataInicio: "30/03/2026",
+    horario: "18:00",
   },
   {
     id: "5",
-    aluno: "Fernanda Lima",
-    tipo: "matricula",
-    status: "pausada",
-    planoOuModalidade: "Plano Anual",
-    turma: "CrossFit B",
-    professor: "Roberto Coach",
-    dataInicio: "10/01/2026",
-    dataFim: "10/01/2027",
+    tipo: "experimental",
+    status: "realizada",
+    modalidade: "Funcional",
+    turma: "Funcional Noite",
+    professor: "Carlos Instrutor",
+    dataInicio: "20/03/2026",
+    horario: "19:30",
   },
   {
     id: "6",
-    aluno: "Gabriel Costa",
     tipo: "experimental",
-    status: "realizada",
-    planoOuModalidade: "Funcional",
-    turma: "Funcional Noite",
-    professor: "Carlos Instrutor",
-    dataInicio: "28/03/2026",
-  },
-  {
-    id: "7",
-    aluno: "Helena Ribeiro",
-    tipo: "matricula",
-    status: "cancelada",
-    planoOuModalidade: "Plano Mensal",
-    turma: "Yoga Tarde",
-    professor: "Mauricio Professor",
-    dataInicio: "01/12/2025",
-    dataFim: "01/01/2026",
-  },
-  {
-    id: "8",
-    aluno: "Igor Martins",
-    tipo: "experimental",
-    status: "nao-compareceu",
-    planoOuModalidade: "Musculação",
-    turma: "Musculação B",
+    status: "convertida",
+    modalidade: "CrossFit",
+    turma: "CrossFit B",
     professor: "Roberto Coach",
-    dataInicio: "27/03/2026",
+    dataInicio: "10/03/2026",
+    horario: "07:00",
   },
 ];
 
@@ -138,7 +109,10 @@ const typeFilters: { label: string; value: "todos" | RecordType }[] = [
   { label: "Experimentais", value: "experimental" },
 ];
 
-const statusConfig: Record<string, { label: string; variant: "success" | "warning" | "destructive" | "info" | "accent" | "secondary" | "default" }> = {
+const statusConfig: Record<
+  string,
+  { label: string; variant: "success" | "warning" | "destructive" | "info" | "accent" | "secondary" }
+> = {
   ativa: { label: "Ativa", variant: "success" },
   pausada: { label: "Pausada", variant: "warning" },
   cancelada: { label: "Cancelada", variant: "destructive" },
@@ -152,46 +126,45 @@ const statusConfig: Record<string, { label: string; variant: "success" | "warnin
   descartada: { label: "Descartada", variant: "secondary" },
 };
 
-export function RegistrationsTable() {
+export function StudentRecordsTable() {
   const [activeFilter, setActiveFilter] = useState<"todos" | RecordType>("todos");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filtered = mockData.filter((r) => {
+  const filtered = mockRecords.filter((r) => {
     const matchesType = activeFilter === "todos" || r.tipo === activeFilter;
     const matchesSearch =
       !searchQuery ||
-      r.aluno.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.planoOuModalidade.toLowerCase().includes(searchQuery.toLowerCase());
+      r.modalidade.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      r.professor.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesType && matchesSearch;
   });
 
   const counts = {
-    todos: mockData.length,
-    matricula: mockData.filter((r) => r.tipo === "matricula").length,
-    experimental: mockData.filter((r) => r.tipo === "experimental").length,
+    todos: mockRecords.length,
+    matricula: mockRecords.filter((r) => r.tipo === "matricula").length,
+    experimental: mockRecords.filter((r) => r.tipo === "experimental").length,
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-foreground">
+          <h2 className="text-base font-semibold text-foreground">
             Matrículas & Experimentais
-          </h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {filtered.length} registro{filtered.length !== 1 ? "s" : ""} encontrado{filtered.length !== 1 ? "s" : ""}
+          </h2>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {filtered.length} registro{filtered.length !== 1 ? "s" : ""}
           </p>
         </div>
-        <Button size="sm" className="gap-1.5">
-          <Plus className="h-4 w-4" />
-          Novo registro
+        <Button size="sm" className="gap-1.5 h-8 text-xs">
+          <Plus className="h-3.5 w-3.5" />
+          Adicionar
         </Button>
       </div>
 
-      {/* Filters bar */}
+      {/* Filters */}
       <div className="flex items-center gap-3">
-        {/* Type pills */}
         <div className="flex items-center gap-1 rounded-lg bg-secondary p-1">
           {typeFilters.map((f) => (
             <button
@@ -221,11 +194,10 @@ export function RegistrationsTable() {
           ))}
         </div>
 
-        {/* Search */}
         <div className="relative flex-1 max-w-xs">
           <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Filtrar registros..."
+            placeholder="Filtrar por modalidade, professor..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="h-8 pl-9 text-xs bg-card"
@@ -243,14 +215,14 @@ export function RegistrationsTable() {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
+              <TableHead className="text-xs font-semibold">Tipo</TableHead>
               <TableHead className="text-xs font-semibold">
                 <button className="flex items-center gap-1">
-                  Aluno <ArrowUpDown className="h-3 w-3" />
+                  Modalidade <ArrowUpDown className="h-3 w-3" />
                 </button>
               </TableHead>
-              <TableHead className="text-xs font-semibold">Tipo</TableHead>
               <TableHead className="text-xs font-semibold">Status</TableHead>
-              <TableHead className="text-xs font-semibold">Plano / Modalidade</TableHead>
+              <TableHead className="text-xs font-semibold">Plano</TableHead>
               <TableHead className="text-xs font-semibold">Turma</TableHead>
               <TableHead className="text-xs font-semibold">Professor</TableHead>
               <TableHead className="text-xs font-semibold">
@@ -264,11 +236,11 @@ export function RegistrationsTable() {
           <TableBody>
             {filtered.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="h-40 text-center">
+                <TableCell colSpan={8} className="h-32 text-center">
                   <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                    <ClipboardList className="h-8 w-8 opacity-40" />
+                    <ClipboardList className="h-7 w-7 opacity-40" />
                     <p className="text-sm font-medium">Nenhum registro encontrado</p>
-                    <p className="text-xs">Tente ajustar os filtros ou adicione um novo registro.</p>
+                    <p className="text-xs">Adicione uma matrícula ou aula experimental.</p>
                   </div>
                 </TableCell>
               </TableRow>
@@ -277,14 +249,6 @@ export function RegistrationsTable() {
                 const sc = statusConfig[record.status];
                 return (
                   <TableRow key={record.id} className="group cursor-pointer">
-                    <TableCell className="font-medium text-sm">
-                      <div className="flex items-center gap-2.5">
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground text-[10px] font-semibold">
-                          {record.aluno.split(" ").map((n) => n[0]).join("")}
-                        </div>
-                        {record.aluno}
-                      </div>
-                    </TableCell>
                     <TableCell>
                       <Badge
                         variant={record.tipo === "matricula" ? "default" : "accent"}
@@ -293,29 +257,29 @@ export function RegistrationsTable() {
                         {record.tipo === "matricula" ? "Matrícula" : "Experimental"}
                       </Badge>
                     </TableCell>
+                    <TableCell className="text-sm font-medium">{record.modalidade}</TableCell>
                     <TableCell>
                       <Badge variant={sc.variant} className="text-[10px] px-2">
                         {sc.label}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {record.planoOuModalidade}
+                      {record.plano || "—"}
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {record.turma}
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {record.professor}
-                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{record.turma}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{record.professor}</TableCell>
                     <TableCell className="text-sm text-muted-foreground tabular-nums">
                       {record.dataInicio}
+                      {record.horario && (
+                        <span className="text-muted-foreground/60">, {record.horario}</span>
+                      )}
                       {record.dataFim && (
                         <span className="text-muted-foreground/50"> → {record.dataFim}</span>
                       )}
                     </TableCell>
                     <TableCell>
                       <button className="opacity-0 group-hover:opacity-100 p-1 rounded-md hover:bg-secondary transition-all">
-                        <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
                       </button>
                     </TableCell>
                   </TableRow>
