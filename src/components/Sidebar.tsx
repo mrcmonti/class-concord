@@ -11,6 +11,7 @@ import {
   BookOpen,
   Sparkles,
   Beaker,
+  Calendar,
   Settings,
   ChevronDown,
   ChevronLeft,
