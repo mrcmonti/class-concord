@@ -11,6 +11,7 @@ import {
   BookOpen,
   Sparkles,
   Beaker,
+  Calendar,
   Settings,
   ChevronDown,
   ChevronLeft,
@@ -52,7 +53,8 @@ const navGroups: NavGroup[] = [
       { label: "Professores", icon: GraduationCap },
       { label: "Turmas", icon: BookOpen },
       { label: "Modalidades", icon: Sparkles },
-      { label: "Experimentais", icon: Beaker, active: true },
+      { label: "Experimentais", icon: Beaker },
+      { label: "Calendário", icon: Calendar, active: true, href: "/calendario" },
     ],
   },
   {
