@@ -102,10 +102,11 @@ function isSameDay(a: Date, b: Date) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
-function EventPill({ event }: { event: CalendarEvent }) {
+function EventPill({ event, onClick }: { event: CalendarEvent; onClick: (e: CalendarEvent) => void }) {
   const isExp = event.type === "experimental";
   return (
     <button
+      onClick={() => onClick(event)}
       className={cn(
         "w-full text-left truncate rounded-md px-1.5 py-0.5 text-[11px] font-medium leading-tight transition-all hover:brightness-95",
         isExp
