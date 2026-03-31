@@ -474,7 +474,7 @@ export function CalendarPage() {
                     </div>
                     <div className="space-y-0.5">
                       {dayEvents.slice(0, maxVisible).map((event) => (
-                        <EventPill key={event.id} event={event} />
+                        <EventPill key={event.id} event={event} onClick={setSelectedEvent} />
                       ))}
                       {overflow > 0 && (
                         <button className="w-full text-center text-[10px] font-medium text-primary hover:underline">
