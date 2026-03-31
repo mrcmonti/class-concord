@@ -7,6 +7,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import {
   ChevronLeft,
@@ -15,6 +24,13 @@ import {
   Filter,
   Beaker,
   Plus,
+  Clock,
+  User,
+  Dumbbell,
+  GraduationCap,
+  CheckCircle2,
+  Phone,
+  XCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -86,10 +102,11 @@ function isSameDay(a: Date, b: Date) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
-function EventPill({ event }: { event: CalendarEvent }) {
+function EventPill({ event, onClick }: { event: CalendarEvent; onClick: (e: CalendarEvent) => void }) {
   const isExp = event.type === "experimental";
   return (
     <button
+      onClick={() => onClick(event)}
       className={cn(
         "w-full text-left truncate rounded-md px-1.5 py-0.5 text-[11px] font-medium leading-tight transition-all hover:brightness-95",
         isExp
@@ -103,12 +120,15 @@ function EventPill({ event }: { event: CalendarEvent }) {
   );
 }
 
-function ListViewRow({ event }: { event: CalendarEvent }) {
+function ListViewRow({ event, onClick }: { event: CalendarEvent; onClick: (e: CalendarEvent) => void }) {
   const isExp = event.type === "experimental";
   const dateStr = event.date.toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "2-digit" });
 
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-3 hover:shadow-sm transition-shadow">
+    <div
+      onClick={() => onClick(event)}
+      className="flex items-center gap-4 rounded-xl border border-border bg-card p-3 hover:shadow-sm transition-shadow cursor-pointer"
+    >
       <div className={cn(
         "flex h-9 w-9 items-center justify-center rounded-lg text-xs font-bold",
         isExp ? "bg-warning/15 text-warning" : "bg-primary/10 text-primary"
@@ -133,6 +153,91 @@ function ListViewRow({ event }: { event: CalendarEvent }) {
   );
 }
 
+function EventDetailModal({ event, open, onOpenChange }: { event: CalendarEvent | null; open: boolean; onOpenChange: (v: boolean) => void }) {
+  if (!event) return null;
+  const isExp = event.type === "experimental";
+  const dateStr = event.date.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <div className="flex items-center gap-3 mb-1">
+            <div className={cn(
+              "flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold",
+              isExp ? "bg-warning/15 text-warning" : "bg-primary/10 text-primary"
+            )}>
+              {isExp ? <Beaker className="h-5 w-5" /> : "AT"}
+            </div>
+            <div>
+              <DialogTitle className="text-lg">{event.title}</DialogTitle>
+              <DialogDescription>
+                <Badge variant="secondary" className={cn(
+                  "text-[10px] mt-1",
+                  isExp ? "bg-warning/10 text-warning" : "bg-primary/10 text-primary"
+                )}>
+                  {isExp ? "Aula Experimental" : "Turma Regular"}
+                </Badge>
+              </DialogDescription>
+            </div>
+          </div>
+        </DialogHeader>
+
+        <div className="space-y-3 py-2">
+          <div className="flex items-center gap-3 text-sm">
+            <CalendarIcon className="h-4 w-4 text-muted-foreground shrink-0" />
+            <span className="text-foreground capitalize">{dateStr}</span>
+          </div>
+          <div className="flex items-center gap-3 text-sm">
+            <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
+            <span className="text-foreground">{event.horario}</span>
+          </div>
+          <div className="flex items-center gap-3 text-sm">
+            <Dumbbell className="h-4 w-4 text-muted-foreground shrink-0" />
+            <span className="text-foreground">{event.modalidade}</span>
+          </div>
+          <div className="flex items-center gap-3 text-sm">
+            <GraduationCap className="h-4 w-4 text-muted-foreground shrink-0" />
+            <span className="text-foreground">{event.professor}</span>
+          </div>
+          {isExp && event.aluno && (
+            <div className="flex items-center gap-3 text-sm">
+              <User className="h-4 w-4 text-muted-foreground shrink-0" />
+              <span className="text-foreground">{event.aluno}</span>
+            </div>
+          )}
+        </div>
+
+        <DialogFooter className="flex-col sm:flex-row gap-2 pt-2">
+          {isExp ? (
+            <>
+              <Button variant="outline" className="gap-2 flex-1" size="sm">
+                <Phone className="h-3.5 w-3.5" />
+                Contatar aluno
+              </Button>
+              <Button className="gap-2 flex-1" size="sm">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                Converter em matrícula
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" className="gap-2 flex-1" size="sm">
+                <XCircle className="h-3.5 w-3.5" />
+                Cancelar aula
+              </Button>
+              <Button className="gap-2 flex-1" size="sm">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                Confirmar presença
+              </Button>
+            </>
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export function CalendarPage() {
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(new Date(2026, 2, 1)); // March 2026 to match mock data
@@ -141,6 +246,7 @@ export function CalendarPage() {
   const [modalidadeFilter, setModalidadeFilter] = useState("todas");
   const [professorFilter, setProfessorFilter] = useState("todos");
   const [showExperimentais, setShowExperimentais] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -315,7 +421,7 @@ export function CalendarPage() {
             {visibleEvents
               .sort((a, b) => a.date.getTime() - b.date.getTime() || a.horario.localeCompare(b.horario))
               .map((event) => (
-                <ListViewRow key={event.id} event={event} />
+                <ListViewRow key={event.id} event={event} onClick={setSelectedEvent} />
               ))}
             {visibleEvents.length === 0 && (
               <p className="py-12 text-center text-sm text-muted-foreground">Nenhum evento encontrado.</p>
@@ -368,7 +474,7 @@ export function CalendarPage() {
                     </div>
                     <div className="space-y-0.5">
                       {dayEvents.slice(0, maxVisible).map((event) => (
-                        <EventPill key={event.id} event={event} />
+                        <EventPill key={event.id} event={event} onClick={setSelectedEvent} />
                       ))}
                       {overflow > 0 && (
                         <button className="w-full text-center text-[10px] font-medium text-primary hover:underline">
@@ -383,6 +489,12 @@ export function CalendarPage() {
           </>
         )}
       </div>
+
+      <EventDetailModal
+        event={selectedEvent}
+        open={!!selectedEvent}
+        onOpenChange={(v) => { if (!v) setSelectedEvent(null); }}
+      />
     </div>
   );
 }
