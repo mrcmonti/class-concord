@@ -421,7 +421,7 @@ export function CalendarPage() {
             {visibleEvents
               .sort((a, b) => a.date.getTime() - b.date.getTime() || a.horario.localeCompare(b.horario))
               .map((event) => (
-                <ListViewRow key={event.id} event={event} />
+                <ListViewRow key={event.id} event={event} onClick={setSelectedEvent} />
               ))}
             {visibleEvents.length === 0 && (
               <p className="py-12 text-center text-sm text-muted-foreground">Nenhum evento encontrado.</p>
