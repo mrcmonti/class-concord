@@ -157,6 +157,7 @@ export function CalendarPage() {
   const [modalidadeFilter, setModalidadeFilter] = useState("todas");
   const [professorFilter, setProfessorFilter] = useState("todos");
   const [showExperimentais, setShowExperimentais] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
