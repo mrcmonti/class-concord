@@ -7,6 +7,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import {
   ChevronLeft,
@@ -15,6 +24,13 @@ import {
   Filter,
   Beaker,
   Plus,
+  Clock,
+  User,
+  Dumbbell,
+  GraduationCap,
+  CheckCircle2,
+  Phone,
+  XCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
