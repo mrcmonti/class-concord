@@ -120,12 +120,15 @@ function EventPill({ event, onClick }: { event: CalendarEvent; onClick: (e: Cale
   );
 }
 
-function ListViewRow({ event }: { event: CalendarEvent }) {
+function ListViewRow({ event, onClick }: { event: CalendarEvent; onClick: (e: CalendarEvent) => void }) {
   const isExp = event.type === "experimental";
   const dateStr = event.date.toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "2-digit" });
 
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-3 hover:shadow-sm transition-shadow">
+    <div
+      onClick={() => onClick(event)}
+      className="flex items-center gap-4 rounded-xl border border-border bg-card p-3 hover:shadow-sm transition-shadow cursor-pointer"
+    >
       <div className={cn(
         "flex h-9 w-9 items-center justify-center rounded-lg text-xs font-bold",
         isExp ? "bg-warning/15 text-warning" : "bg-primary/10 text-primary"
@@ -147,6 +150,91 @@ function ListViewRow({ event }: { event: CalendarEvent }) {
         {isExp ? "Experimental" : "Turma"}
       </Badge>
     </div>
+  );
+}
+
+function EventDetailModal({ event, open, onOpenChange }: { event: CalendarEvent | null; open: boolean; onOpenChange: (v: boolean) => void }) {
+  if (!event) return null;
+  const isExp = event.type === "experimental";
+  const dateStr = event.date.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <div className="flex items-center gap-3 mb-1">
+            <div className={cn(
+              "flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold",
+              isExp ? "bg-warning/15 text-warning" : "bg-primary/10 text-primary"
+            )}>
+              {isExp ? <Beaker className="h-5 w-5" /> : "AT"}
+            </div>
+            <div>
+              <DialogTitle className="text-lg">{event.title}</DialogTitle>
+              <DialogDescription>
+                <Badge variant="secondary" className={cn(
+                  "text-[10px] mt-1",
+                  isExp ? "bg-warning/10 text-warning" : "bg-primary/10 text-primary"
+                )}>
+                  {isExp ? "Aula Experimental" : "Turma Regular"}
+                </Badge>
+              </DialogDescription>
+            </div>
+          </div>
+        </DialogHeader>
+
+        <div className="space-y-3 py-2">
+          <div className="flex items-center gap-3 text-sm">
+            <CalendarIcon className="h-4 w-4 text-muted-foreground shrink-0" />
+            <span className="text-foreground capitalize">{dateStr}</span>
+          </div>
+          <div className="flex items-center gap-3 text-sm">
+            <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
+            <span className="text-foreground">{event.horario}</span>
+          </div>
+          <div className="flex items-center gap-3 text-sm">
+            <Dumbbell className="h-4 w-4 text-muted-foreground shrink-0" />
+            <span className="text-foreground">{event.modalidade}</span>
+          </div>
+          <div className="flex items-center gap-3 text-sm">
+            <GraduationCap className="h-4 w-4 text-muted-foreground shrink-0" />
+            <span className="text-foreground">{event.professor}</span>
+          </div>
+          {isExp && event.aluno && (
+            <div className="flex items-center gap-3 text-sm">
+              <User className="h-4 w-4 text-muted-foreground shrink-0" />
+              <span className="text-foreground">{event.aluno}</span>
+            </div>
+          )}
+        </div>
+
+        <DialogFooter className="flex-col sm:flex-row gap-2 pt-2">
+          {isExp ? (
+            <>
+              <Button variant="outline" className="gap-2 flex-1" size="sm">
+                <Phone className="h-3.5 w-3.5" />
+                Contatar aluno
+              </Button>
+              <Button className="gap-2 flex-1" size="sm">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                Converter em matrícula
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" className="gap-2 flex-1" size="sm">
+                <XCircle className="h-3.5 w-3.5" />
+                Cancelar aula
+              </Button>
+              <Button className="gap-2 flex-1" size="sm">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                Confirmar presença
+              </Button>
+            </>
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
