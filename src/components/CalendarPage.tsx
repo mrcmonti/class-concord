@@ -489,6 +489,12 @@ export function CalendarPage() {
           </>
         )}
       </div>
+
+      <EventDetailModal
+        event={selectedEvent}
+        open={!!selectedEvent}
+        onOpenChange={(v) => { if (!v) setSelectedEvent(null); }}
+      />
     </div>
   );
 }
