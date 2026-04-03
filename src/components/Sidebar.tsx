@@ -60,7 +60,7 @@ const navGroups: NavGroup[] = [
   {
     title: "CONFIGURAÇÕES",
     collapsible: true,
-    items: [{ label: "Geral", icon: Settings }],
+    items: [{ label: "Geral", icon: Settings, href: "/configuracoes" }],
   },
 ];
 
