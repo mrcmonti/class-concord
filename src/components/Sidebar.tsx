@@ -107,9 +107,10 @@ export function Sidebar() {
               {group.items.map((item) => (
                 <button
                   key={item.label}
+                  onClick={() => item.href && navigate(item.href)}
                   className={cn(
                     "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                    item.active
+                    (item.href && location.pathname === item.href) || item.active
                       ? "bg-accent text-accent-foreground"
                       : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                   )}
