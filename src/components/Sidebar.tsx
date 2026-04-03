@@ -50,7 +50,7 @@ const navGroups: NavGroup[] = [
     title: "ACADÊMICO",
     collapsible: true,
     items: [
-      { label: "Alunos", icon: Users },
+      { label: "Alunos", icon: Users, href: "/alunos" },
       { label: "Professores", icon: GraduationCap },
       { label: "Turmas", icon: BookOpen },
       { label: "Modalidades", icon: Sparkles },
