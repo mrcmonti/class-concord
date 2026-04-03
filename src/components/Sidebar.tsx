@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -60,12 +61,14 @@ const navGroups: NavGroup[] = [
   {
     title: "CONFIGURAÇÕES",
     collapsible: true,
-    items: [{ label: "Geral", icon: Settings }],
+    items: [{ label: "Geral", icon: Settings, href: "/configuracoes" }],
   },
 ];
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <aside
@@ -104,9 +107,10 @@ export function Sidebar() {
               {group.items.map((item) => (
                 <button
                   key={item.label}
+                  onClick={() => item.href && navigate(item.href)}
                   className={cn(
                     "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                    item.active
+                    (item.href && location.pathname === item.href) || item.active
                       ? "bg-accent text-accent-foreground"
                       : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                   )}
