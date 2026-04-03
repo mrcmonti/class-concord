@@ -67,6 +67,8 @@ const navGroups: NavGroup[] = [
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <aside
