@@ -202,7 +202,10 @@ function StudentCard({ student }: { student: Student }) {
 
       {/* Footer */}
       <div className="border-t border-border px-5 py-3">
-        <button className="flex w-full items-center justify-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors">
+        <button
+          onClick={() => navigate(`/alunos/${student.id}`)}
+          className="flex w-full items-center justify-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
           Ver detalhes
           <ChevronRight className="h-3.5 w-3.5" />
         </button>
