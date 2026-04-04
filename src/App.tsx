@@ -8,6 +8,7 @@ import CalendarView from "./pages/CalendarView.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import SettingsView from "./pages/SettingsView.tsx";
 import AlunosView from "./pages/AlunosView.tsx";
+import StudentProfileView from "./pages/StudentProfileView.tsx";
 
 const queryClient = new QueryClient();
 
