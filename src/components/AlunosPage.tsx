@@ -22,6 +22,7 @@ import {
   Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 type StudentStatus = "ativo" | "inativo" | "inadimplente";
 
@@ -136,6 +137,7 @@ const mockStudents: Student[] = [
 function StudentCard({ student }: { student: Student }) {
   const sc = statusConfig[student.status];
   const initials = student.nome.split(" ").map((n) => n[0]).join("").slice(0, 2);
+  const navigate = useNavigate();
 
   return (
     <div className="group rounded-xl border border-border bg-card transition-all hover:shadow-md hover:border-primary/20">
@@ -200,7 +202,10 @@ function StudentCard({ student }: { student: Student }) {
 
       {/* Footer */}
       <div className="border-t border-border px-5 py-3">
-        <button className="flex w-full items-center justify-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors">
+        <button
+          onClick={() => navigate(`/alunos/${student.id}`)}
+          className="flex w-full items-center justify-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
           Ver detalhes
           <ChevronRight className="h-3.5 w-3.5" />
         </button>

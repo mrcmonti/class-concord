@@ -8,6 +8,7 @@ import CalendarView from "./pages/CalendarView.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import SettingsView from "./pages/SettingsView.tsx";
 import AlunosView from "./pages/AlunosView.tsx";
+import StudentProfileView from "./pages/StudentProfileView.tsx";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/alunos" element={<AlunosView />} />
+          <Route path="/alunos/:id" element={<StudentProfileView />} />
           <Route path="/calendario" element={<CalendarView />} />
           <Route path="/configuracoes" element={<SettingsView />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
