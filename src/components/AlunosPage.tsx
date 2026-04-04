@@ -137,6 +137,7 @@ const mockStudents: Student[] = [
 function StudentCard({ student }: { student: Student }) {
   const sc = statusConfig[student.status];
   const initials = student.nome.split(" ").map((n) => n[0]).join("").slice(0, 2);
+  const navigate = useNavigate();
 
   return (
     <div className="group rounded-xl border border-border bg-card transition-all hover:shadow-md hover:border-primary/20">
