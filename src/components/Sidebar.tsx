@@ -13,6 +13,7 @@ import {
   Sparkles,
   Beaker,
   Calendar,
+  ClipboardList,
   Settings,
   ChevronDown,
   ChevronLeft,
