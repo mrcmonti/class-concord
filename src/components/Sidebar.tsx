@@ -56,7 +56,8 @@ const navGroups: NavGroup[] = [
       { label: "Turmas", icon: BookOpen },
       { label: "Modalidades", icon: Sparkles },
       { label: "Experimentais", icon: Beaker },
-      { label: "Calendário", icon: Calendar, active: true, href: "/calendario" },
+      { label: "Calendário", icon: Calendar, href: "/calendario" },
+      { label: "Lista de Presença", icon: ClipboardList, href: "/presencas" },
     ],
   },
   {
